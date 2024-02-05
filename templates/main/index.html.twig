@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Agenda{% endblock %}
+
+{% block body %}
+
+
+
+{#<h2>{{ year }}</h2>#}
+
+    <table class="month_calendar">
+        <tr class="pouet">
+            {% for month in months %}
+                <td class="text-center calendar_month"><a href="{{ path('app_agenda', {'month':month}) }}">{{ monthsNumberName[month] }}</a></td>
+
+            {% endfor %}
+        </tr>
+
+    </table>
+
+{#En gros#}
+{#    #}
+{#    Deja, il faut afficher  tous les mois/jours d'une année afin de pouvoir naviguer entre#}
+{#    #}
+{#    Il faut que j'entre en parametre en url les:#}
+{#    année#}
+{#    mois#}
+{#    jour#}
+{#    #}
+{#    Une fois que ceci est fait#}
+{#    #}
+{#    Créer un formulaire dans la page d'un jour#}
+{#    #}
+{#    ex : /2024/mars/25 #}
+{#    #}
+{#    créer un event à l'aide de notre formulaire afin #}
+{#    de pouvoir le sauvegarder en base de donnée puis de gerer son affichage sur la page "journée" et #}
+{#    sur la page mois grace â une indication du genre#}
+{#    #}
+{#    '3 evenements ce jour la'#}
+
+
+
+
+
+
+
+{% endblock %}

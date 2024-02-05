@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <h2>{{ monthName }}</h2>
+
+        <table class="month_calendar">
+
+
+
+
+            <tr class="pouet">
+                {% for day in 1..numberOfDays %}
+                    <td class="text-center calendar_day">{{ day }}</td>
+
+                {% endfor %}
+
+            </tr>
+
+        </table>
+
+
+
+{% endblock %}
+
+{% block title %}
+
+{% endblock %}
+

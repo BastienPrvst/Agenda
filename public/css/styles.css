@@ -1,0 +1,31 @@
+.month_calendar{
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+    height: 80vh;
+}
+
+.pouet{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+
+}
+
+.calendar_month{
+
+    padding: 50px;
+    border: solid black 1px;
+    width: 25%;
+}
+.calendar_month a {
+    text-decoration: none;
+    color: black;
+}
+
+.calendar_day{
+    padding: 50px;
+    border: solid black 1px;
+    width: 14.28%;
+}
