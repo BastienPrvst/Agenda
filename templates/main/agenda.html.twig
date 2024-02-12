@@ -8,15 +8,27 @@
 
 
 
+        {% for week in 1..numberOfWeeks%}
 
             <tr class="pouet">
-                {% for day in 1..numberOfDays %}
-                    <td class="text-center calendar_day">{{ day }}</td>
+
+                {% for day in days %}
+
+                    <td class="text-center calendar_day">
+
+                        <div class="day-name">{{ day }}</div>
+                        <div class="day-number">{{ firstMonday|date('d') }}</div>
+
+                        {% set firstMonday = firstMonday|date_modify("+1 day") %}
+
+                    </td>
 
                 {% endfor %}
 
             </tr>
 
+
+        {% endfor %}
         </table>
 
 

@@ -8,6 +8,16 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Month {
 
+    public array $days = [
+        'Lundi',
+        'Mardi',
+        'Mercredi',
+        'Jeudi',
+        'Vendredi',
+        'Samedi',
+        'Dimanche'
+    ];
+
     //Array des noms des mois
     private array $months = [
         'Janvier',
@@ -34,11 +44,10 @@ class Month {
      */
 
     /**
-     * @param int $month Le mois entre 1 et 12
-     * @param int $year
+     * @param int|null $month Le mois entre 1 et 12
+     * @param int|null $year
      *
-     * Il s'agit de la fonction __construct de l'objet Month avec deux parametres $month et $year pouvant etre null (ce qui affichera le mois et l'année actuelle).
-     *
+     * Il s'agit de la fonction __construct de l'objet Month avec deux paramètres $month et $year pouvant être null (ce qui affichera le mois et l'année actuelle).
      */
     public function __construct(?int $month = null, ?int $year = null)
     {
@@ -72,6 +81,17 @@ class Month {
     }
 
     /**
+     * Renvoie le premier jour du mois
+     * @return \DateTime
+     */
+    public function getFirstDay(): \DateTime {
+
+    return new \DateTime("$this->year-$this->month-01");
+
+    }
+
+
+    /**
      * @return string Retourne le mois en toutes lettres
      */
     public function toString(): string{
@@ -91,10 +111,9 @@ class Month {
 //
 //        if ($numberOfDays < )
 
-        $start = new \DateTime("$this->year-$this->month-01");
+        $start = $this->getFirstDay();
         $end = (clone $start)->modify('+1 month -1 day'); //Permet d'aller au dernier jour du mois
 
-        var_dump($start->format('W'), $end->format('W'));
 
         $weeks = intval($end->format('W')) - intval($start->format('W')) + 1;
 

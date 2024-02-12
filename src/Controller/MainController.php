@@ -13,7 +13,7 @@ class MainController extends AbstractController
 
 
     #[Route('/', name: 'app_main')]
-    public function index(Month $month): Response
+    public function index(): Response
     {
 
         $newMonth = new Month();
@@ -38,18 +38,13 @@ class MainController extends AbstractController
 
         $months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
-
-
-
         $monthNumberName = array_combine($months, $monthsName);
-
 
 
         return $this->render('main/index.html.twig', [
 
             'monthsName' => $monthsName,
             'months' => $months,
-//            'monthDay'=> $monthDay,
             'monthsNumberName' => $monthNumberName
 
         ]);
@@ -59,41 +54,36 @@ class MainController extends AbstractController
     public function agenda($month): Response
     {
 
-        $newMonth = new Month($month);
+        //Je passe le mois en int car j'avais une erreur serveur
+        $numberMonth = intval($month);
 
+        //Création du nouveau mois avec celui passé en paramètres
+        $newMonth = new Month($numberMonth);
+
+        //Passage du mois en string
         $targetedMonth = $newMonth->toString();
 
-
+        //Nombre de semaines dans le mois
         $numberOfWeeks = $newMonth->getWeeks();
-
 
         dump($numberOfWeeks);
 
+        $days = $newMonth->days;
+
+        //On récupère le dernier lundi par rapport au premier jour du mois
+        $firstMonday = $newMonth->getFirstDay()->modify('last monday');
 
 
 
-        $daysOfMonth = cal_days_in_month(CAL_GREGORIAN, $month, 2024);
-//
-//        dump($daysOfMonth);
-//
-//        $numberOfDaysInMonth = [];
-//
-//        for ($i = 0; $i <=$daysOfMonth; $i++){
-//
-//            $numberOfDaysInMonth[] = 'day';
-//
-//        }
-//
-//
-//        dump($numberOfDaysInMonth);
 
 
 
         return $this->render('main/agenda.html.twig', [
 
-            'numberOfDays' => $daysOfMonth,
             'monthName' => $targetedMonth,
-
+            'numberOfWeeks' => $numberOfWeeks,
+            'days' => $days,
+            'firstMonday'=> $firstMonday
 
         ]);
 
