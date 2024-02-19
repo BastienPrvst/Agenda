@@ -12,15 +12,9 @@ class MainController extends AbstractController
 {
 
 
-    #[Route('/', name: 'app_main')]
-    public function index(): Response
+    #[Route('/', name: 'app_year')]
+    public function year(): Response
     {
-
-        $newMonth = new Month();
-
-        dump($newMonth);
-        dump($newMonth->toString());
-
         $monthsName = [
             'Janvier',
             'Février',
@@ -50,8 +44,9 @@ class MainController extends AbstractController
         ]);
     }
 
-    #[Route('/{month}', name: 'app_agenda')]
-    public function agenda($month): Response
+
+    #[Route('/{month}', name: 'app_month')]
+    public function agendaMonth($month): Response
     {
 
         //Je passe le mois en int car j'avais une erreur serveur
@@ -72,10 +67,34 @@ class MainController extends AbstractController
         $actualMonth = $newMonth->month;
 
         //On récupère le dernier lundi par rapport au premier jour du mois
-        $firstMonday = $newMonth->getFirstDay()->modify('last monday');
+
+
+//        Condition pour des cas comme janvier ou il prenait la derniere semaine de décembre
+        if($newMonth->getFirstDay()->format('N') === '1'){
+
+            $firstMonday = $newMonth->getFirstDay();
+
+        }else{
+
+            $firstMonday = $newMonth->getFirstDay()->modify('last monday');
+
+        }
+
+//        $firstDayOfMonth = $newMonth->getFirstDay();
+//
+//        $a = $newMonth->getFirstDay()->format('N');
+//
+//        $aint = intval($a);
+//
+//        if ($a !== '1') {
+//
+//            $firstDayOfMonth = $newMonth->getFirstDay()->modify('-' . strval($aint-1) . 'day');
+//
+//        }
+//
+//        $firstMonday = $firstDayOfMonth;
 
         $firstDay = $newMonth->getFirstDay();
-
 
 
 
@@ -86,7 +105,8 @@ class MainController extends AbstractController
             'days' => $days,
             'firstMonday'=> $firstMonday,
             'actualMonth' => $actualMonth,
-            'firstDay' => $firstDay
+            'firstDay' => $firstDay,
+            'month' => $numberMonth
 
         ]);
 
@@ -94,9 +114,15 @@ class MainController extends AbstractController
 
     }
 
-    #[Route('{/{month}/{day}', name: 'app_daily')]
-    public function daily($month, $day): Response
+    #[Route('/{month}/{day}', name: 'app_daily')]
+    public function agendaDaily($month, $day): Response
     {
+
+        $month = new Month();
+
+
+
+
 
         return $this->render('main/daily.html.twig');
 

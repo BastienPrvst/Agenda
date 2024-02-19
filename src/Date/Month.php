@@ -107,21 +107,19 @@ class Month {
      */
     public function getWeeks(): int {
 
-//        $numberOfDays = cal_days_in_month(CAL_GREGORIAN, $month, $year) / 7;
-//
-//        if ($numberOfDays < )
 
         $start = $this->getFirstDay();
         $end = (clone $start)->modify('+1 month -1 day'); //Permet d'aller au dernier jour du mois
 
 
-        $weeks = intval($end->format('W')) - intval($start->format('W')) + 1;
+//        $weeks = intval($end->format('W')) - intval($start->format('W')) + 1;
+//
+//        if ($weeks < 0){
+//            $weeks = intval($end->format('W'));
+//        }
 
-        if ($weeks < 0){
-            $weeks = intval($end->format('W'));
-        }
-
-        return $weeks;
+        $interval = $start->diff($end);
+        return ceil(($interval->days + 1) / 7);
 
      }
 

@@ -11,7 +11,7 @@
     <table class="month_calendar">
         <tr class="pouet">
             {% for month in months %}
-                <td class="text-center calendar_month"><a href="{{ path('app_agenda', {'month':month}) }}">{{ monthsNumberName[month] }}</a></td>
+                <td class="text-center calendar_month"><a href="{{ path('app_month', {'month':month}) }}">{{ monthsNumberName[month] }}</a></td>
 
             {% endfor %}
         </tr>
