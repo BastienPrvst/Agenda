@@ -66,14 +66,15 @@ class MainController extends AbstractController
         //Nombre de semaines dans le mois
         $numberOfWeeks = $newMonth->getWeeks();
 
-        dump($numberOfWeeks);
-
         $days = $newMonth->days;
+
+        //On récupere le mois actuel
+        $actualMonth = $newMonth->month;
 
         //On récupère le dernier lundi par rapport au premier jour du mois
         $firstMonday = $newMonth->getFirstDay()->modify('last monday');
 
-
+        $firstDay = $newMonth->getFirstDay();
 
 
 
@@ -83,7 +84,9 @@ class MainController extends AbstractController
             'monthName' => $targetedMonth,
             'numberOfWeeks' => $numberOfWeeks,
             'days' => $days,
-            'firstMonday'=> $firstMonday
+            'firstMonday'=> $firstMonday,
+            'actualMonth' => $actualMonth,
+            'firstDay' => $firstDay
 
         ]);
 
@@ -91,5 +94,12 @@ class MainController extends AbstractController
 
     }
 
+    #[Route('{/{month}/{day}', name: 'app_daily')]
+    public function daily($month, $day): Response
+    {
+
+        return $this->render('main/daily.html.twig');
+
+    }
 
 }

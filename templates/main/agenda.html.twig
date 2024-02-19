@@ -14,14 +14,30 @@
 
                 {% for day in days %}
 
-                    <td class="text-center calendar_day">
+                    {% if firstMonday|date('m') == firstDay|date('m') %}
 
-                        <div class="day-name">{{ day }}</div>
-                        <div class="day-number">{{ firstMonday|date('d') }}</div>
+                        <td class="text-center calendar_day in-month">
 
-                        {% set firstMonday = firstMonday|date_modify("+1 day") %}
+                            <div class="day-name"><a href="#">{{ day }}</a></div>
+                            <div class="day-number">{{ firstMonday|date('d') }}</div>
 
-                    </td>
+                            {% set firstMonday = firstMonday|date_modify("+1 day") %}
+
+                        </td>
+
+                    {% else %}
+
+                        <td class="text-center calendar_day not-in-month">
+
+                            <div class="day-name">{{ day }}</div>
+                            <div class="day-number">{{ firstMonday|date('d') }}</div>
+
+                            {% set firstMonday = firstMonday|date_modify("+1 day") %}
+
+                        </td>
+
+
+                        {% endif %}
 
                 {% endfor %}
 

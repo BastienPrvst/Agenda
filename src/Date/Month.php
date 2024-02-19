@@ -34,8 +34,8 @@ class Month {
         'Décembre'
     ];
 
-    private ?int $month;
-    private ?int $year;
+    public ?int $month;
+    public ?int $year;
 
 
     /*Suivi du tuto de grafikart.fr afin de voir ce que cela donne avec ma méthode, car je suis bloqué à l'attribution des jours de la semaine par date avec la mienne.
@@ -64,11 +64,11 @@ class Month {
         }
 
 
-        if ($month < 1 || $month > 12){
-
-            throw new NotFoundHttpException("Le mois $month n'est pas valide");
-
-        }
+//        if ($month < 1 || $month > 12){
+//
+//            throw new NotFoundHttpException("Le mois $month n'est pas valide");
+//
+//        }
         if ($year < 1970) {
 
             throw new NotFoundHttpException("L'année est inférieur à 1970");
@@ -103,7 +103,7 @@ class Month {
 
 
     /**
-     * @return int
+     * @return int Retourne le nombre de semaines dans le mois
      */
     public function getWeeks(): int {
 
@@ -124,6 +124,16 @@ class Month {
         return $weeks;
 
      }
+
+
+     public function withinMonth(\DateTime $date) : bool {
+
+        return $this->getFirstDay()->format('Y-m') === $date->format('Y-m');
+
+
+
+     }
+
 
 
 

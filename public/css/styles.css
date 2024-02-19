@@ -10,6 +10,7 @@
     flex-direction: row;
     flex-wrap: wrap;
     width: 100%;
+    height: 20%;
 
 }
 
@@ -25,7 +26,23 @@
 }
 
 .calendar_day{
-    padding: 50px;
+    padding: 40px;
     border: solid black 1px;
     width: 14.28%;
+    font-weight: bold;
+    vertical-align: top;
+
+}
+
+.not-in-month{
+    background: gray;
+    opacity: 30%;
+}
+
+.in-month{
+    background: lightskyblue;
+}
+
+.in-month .day-name a{
+    text-decoration: none;
 }
