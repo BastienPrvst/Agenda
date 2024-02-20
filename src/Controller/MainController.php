@@ -11,10 +11,22 @@ use App\Date\Month;
 class MainController extends AbstractController
 {
 
-
-    #[Route('/', name: 'app_year')]
-    public function year(): Response
+    /**
+     * @param int|null $year
+     * @return Response
+     */
+    #[Route('/{year}', name: 'app_year')]
+    public function year(?int $year = null): Response
     {
+
+        if ($year === null){
+
+            $year = intval(date('Y'));
+
+        }
+
+        dump($year);
+
         $monthsName = [
             'Janvier',
             'Février',
@@ -39,21 +51,25 @@ class MainController extends AbstractController
 
             'monthsName' => $monthsName,
             'months' => $months,
-            'monthsNumberName' => $monthNumberName
+            'monthsNumberName' => $monthNumberName,
+            'year' => $year
 
         ]);
     }
 
-
-    #[Route('/{month}', name: 'app_month')]
-    public function agendaMonth($month): Response
+    /**
+     * @param $month
+     * @return Response
+     */
+    #[Route('/{year}/{month}', name: 'app_month', requirements: ["month" => "([1-9]|1[0-2])"])]
+    public function agendaMonth($year, $month): Response
     {
 
         //Je passe le mois en int car j'avais une erreur serveur
         $numberMonth = intval($month);
 
         //Création du nouveau mois avec celui passé en paramètres
-        $newMonth = new Month($numberMonth);
+        $newMonth = new Month($numberMonth, $year);
 
         //Passage du mois en string
         $targetedMonth = $newMonth->toString();
@@ -80,19 +96,6 @@ class MainController extends AbstractController
 
         }
 
-//        $firstDayOfMonth = $newMonth->getFirstDay();
-//
-//        $a = $newMonth->getFirstDay()->format('N');
-//
-//        $aint = intval($a);
-//
-//        if ($a !== '1') {
-//
-//            $firstDayOfMonth = $newMonth->getFirstDay()->modify('-' . strval($aint-1) . 'day');
-//
-//        }
-//
-//        $firstMonday = $firstDayOfMonth;
 
         $firstDay = $newMonth->getFirstDay();
 
@@ -106,7 +109,8 @@ class MainController extends AbstractController
             'firstMonday'=> $firstMonday,
             'actualMonth' => $actualMonth,
             'firstDay' => $firstDay,
-            'month' => $numberMonth
+            'month' => $numberMonth,
+            'year' => $year
 
         ]);
 
@@ -114,6 +118,12 @@ class MainController extends AbstractController
 
     }
 
+
+    /**
+     * @param $month
+     * @param $day
+     * @return Response
+     */
     #[Route('/{month}/{day}', name: 'app_daily')]
     public function agendaDaily($month, $day): Response
     {

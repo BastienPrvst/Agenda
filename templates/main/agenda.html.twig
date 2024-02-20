@@ -6,10 +6,14 @@
 
     <div class="buttons">
 
-        <a href="{{ path('app_month', { 'month': month > 1 ? month - 1 : 12 } ) }}" class="previous-month"><i class="fa-solid fa-circle-left"></i></a>
+        <a href="{{ path('app_month', { 'month': month > 1 ? month - 1 : 12, 'year': month > 1 ? year : year - 1 } ) }}" class="previous-month"><i class="fa-solid fa-circle-left"></i></a>
 
 
-        <a href="{{ path('app_month', { 'month': month < 12 ? month + 1 : 1 } ) }}" class="next-button"><i class="fa-solid fa-circle-right"></i></a>
+
+
+
+
+        <a href="{{ path('app_month', { 'month': month < 12 ? month + 1 : 1, 'year': month < 12 ? year : year + 1 } ) }}" class="next-button"><i class="fa-solid fa-circle-right"></i></a>
 
     </div>
 
