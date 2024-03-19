@@ -34,7 +34,7 @@
 
                         <td class="text-center calendar_day in-month">
 
-                            <div class="day-name"><a href="{{ path('app_daily', {'month':month, 'day':firstMonday|date('d') }) }}">{{ day }}</a></div>
+                            <div class="day-name"><a href="{{ path('app_daily', {'year':year,'month':month, 'day':firstMonday|date('d') }) }}">{{ day }}</a></div>
                             <div class="day-number">{{  firstMonday|date('d') }}</div>
 
                             {% set firstMonday = firstMonday|date_modify("+1 day") %}

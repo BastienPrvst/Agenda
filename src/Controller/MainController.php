@@ -2,10 +2,14 @@
 
 namespace App\Controller;
 
+use App\Entity\CalendarEvent;
+use App\Form\CreateEventFormType;
+use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Request;
 use phpDocumentor\Reflection\DocBlock\Tags\Return_;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use App\Date\Month;
 
 class MainController extends AbstractController
@@ -15,8 +19,8 @@ class MainController extends AbstractController
      * @param int|null $year
      * @return Response
      */
-    #[Route('/{year}', name: 'app_year')]
-    public function year(?int $year = null): Response
+    #[Route('/year{year}', name: 'app_year')]
+    public function year(int $year = null): Response
     {
 
         if ($year === null){
@@ -24,8 +28,6 @@ class MainController extends AbstractController
             $year = intval(date('Y'));
 
         }
-
-        dump($year);
 
         $monthsName = [
             'Janvier',
@@ -58,21 +60,22 @@ class MainController extends AbstractController
     }
 
     /**
+     * @param $year
      * @param $month
      * @return Response
      */
     #[Route('/{year}/{month}', name: 'app_month', requirements: ["month" => "([1-9]|1[0-2])"])]
-    public function agendaMonth($year, $month): Response
+    public function agendaMonth($year, $month, ManagerRegistry $doctrine): Response
     {
 
         //Je passe le mois en int car j'avais une erreur serveur
         $numberMonth = intval($month);
 
-        //Création du nouveau mois avec celui passé en paramètres
-        $newMonth = new Month($numberMonth, $year);
+        //Création du nouveau mois (et année) avec celui passé en paramètres + null pour le jour.
+        $newMonth = new Month(null,$numberMonth, $year);
 
-        //Passage du mois en string
-        $targetedMonth = $newMonth->toString();
+        //Passage de la date en string
+        $targetedMonth = $newMonth->monthToString();
 
         //Nombre de semaines dans le mois
         $numberOfWeeks = $newMonth->getWeeks();
@@ -85,7 +88,7 @@ class MainController extends AbstractController
         //On récupère le dernier lundi par rapport au premier jour du mois
 
 
-//        Condition pour des cas comme janvier ou il prenait la derniere semaine de décembre
+        //        Condition pour des cas comme janvier ou il prenait la derniere semaine de décembre
         if($newMonth->getFirstDay()->format('N') === '1'){
 
             $firstMonday = $newMonth->getFirstDay();
@@ -98,6 +101,16 @@ class MainController extends AbstractController
 
 
         $firstDay = $newMonth->getFirstDay();
+
+
+        //On récupere les évenements
+
+        $eventManager = $doctrine->getRepository(CalendarEvent::class);
+
+        $allEvents = $eventManager->findAll();
+
+        dump($allEvents);
+
 
 
 
@@ -120,22 +133,74 @@ class MainController extends AbstractController
 
 
     /**
+     * @param $year
      * @param $month
      * @param $day
      * @return Response
      */
-    #[Route('/{month}/{day}', name: 'app_daily')]
-    public function agendaDaily($month, $day): Response
+    #[Route('/{year}/{month}/{day}', name: 'app_daily')]
+    public function agendaDaily($year, $month, $day, ManagerRegistry $doctrine): Response
     {
 
-        $month = new Month();
+        $eventManager = $doctrine->getRepository(CalendarEvent::class);
+
+        $allEvents = $eventManager->findAll();
+
+        dump($allEvents);
+
+        $month = new Month($day,$month, $year);
+
+        $dateInString = $month->dayToString();
+
+
+        return $this->render('main/daily.html.twig', [
+
+            'date' => [
+                'day' => $month->day,
+                'month' => $month->month,
+                'year' => $month->year
+            ],
+            'dateString' => $dateInString,
 
 
 
 
-
-        return $this->render('main/daily.html.twig');
+        ]);
 
     }
+
+    /**
+     *
+     */
+    #[Route('/evenement/', name:'app_event')]
+    public function createEvent(Request $request, ManagerRegistry $doctrine): Response
+    {
+
+        //Création nouvel évent
+        $newEvent = new CalendarEvent();
+
+        //Création formulaire
+        $eventForm = $this->createForm(CreateEventFormType::class, $newEvent);
+
+        $eventForm->handleRequest($request);
+
+
+        if ($eventForm->isSubmitted() && $eventForm->isValid()){
+
+            $em = $doctrine->getManager();
+
+            $em->persist($newEvent);
+
+            $em->flush();
+            
+        }
+
+
+        return $this->render('main/event.html.twig', [
+            'form' => $eventForm->createView(),
+        ]);
+
+    }
+
 
 }

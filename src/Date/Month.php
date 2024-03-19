@@ -3,6 +3,7 @@
 namespace App\Date;
 
 use App\Entity\Date;
+use mysql_xdevapi\Exception;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
@@ -34,14 +35,10 @@ class Month {
         'Décembre'
     ];
 
+    public ?int $day;
     public ?int $month;
     public ?int $year;
 
-
-    /*Suivi du tuto de grafikart.fr afin de voir ce que cela donne avec ma méthode, car je suis bloqué à l'attribution des jours de la semaine par date avec la mienne.
-     *
-     *
-     */
 
     /**
      * @param int|null $month Le mois entre 1 et 12
@@ -49,7 +46,7 @@ class Month {
      *
      * Il s'agit de la fonction __construct de l'objet Month avec deux paramètres $month et $year pouvant être null (ce qui affichera le mois et l'année actuelle).
      */
-    public function __construct(?int $month = null, ?int $year = null)
+    public function __construct(?int $day = null, ?int $month = null, ?int $year = null)
     {
         if ($month === null){
 
@@ -58,19 +55,31 @@ class Month {
         }
 
 
+        if (isset($day)){
+
+            if ($day < 1 || $day > 31){
+
+                throw new NotFoundHttpException("Le jour $day n/'est pas valide");
+
+            }
+
+        }
 
 
-//        if ($month < 1 || $month > 12){
-//
-//            throw new NotFoundHttpException("Le mois $month n'est pas valide");
-//
-//        }
+
+
+
+        if ($month < 1 || $month > 12){
+
+            throw new NotFoundHttpException("Le mois $month n'est pas valide");
+
+        }
         if ($year < 1970) {
 
             throw new NotFoundHttpException("L'année est inférieur à 1970");
         }
 
-
+        $this->day = $day;
         $this->month = $month;
         $this->year = $year;
 
@@ -90,13 +99,23 @@ class Month {
     /**
      * @return string Retourne le mois en toutes lettres
      */
-    public function toString(): string{
+    public function monthToString(): string{
 
        return $this->months[$this->month - 1] . ' ' . $this->year;
 
-
     }
 
+    public function dayToString(): string{
+
+        $date = new \DateTime("$this->year-$this->month-$this->day");
+
+        $dayNumber = $date->format('d');
+
+        $dayName = $this->days[$date->format('N') -1];
+
+        return $dayName . ' ' . $dayNumber . ' ' . $this->months[$this->month - 1] . ' ' . $this->year;
+
+    }
 
     /**
      * @return int Retourne le nombre de semaines dans le mois
@@ -107,6 +126,7 @@ class Month {
 
         $end = (clone $start)->modify('+1 month -1 day');
 
+        //Méthode pour les mois commencant un lundi qui prenaient toute la semaine précédente
 
         if ($start->format('N') !== '1'){
 
